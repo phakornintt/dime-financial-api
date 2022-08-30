@@ -23,7 +23,7 @@ for i in data:
 print("Rows:", len(df))
 
 # Add ETL Date
-df["ETL Date"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+df["ETL_Date"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 # Database connection
 server = cfg.db_server
