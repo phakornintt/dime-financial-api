@@ -17,13 +17,12 @@ except:
 
 # Create Dataframe
 df = pd.DataFrame()
-for i in data['historical']:
+for i in data:
     df = df.append(i,ignore_index=True)
 print("Rows:", len(df))
-print(df.head())
 # Database connection
-server = "BAC00627"
-database = "TEST"
+server = cfg.db_server
+database = "financedb"
 username = cfg.db_user
 password = cfg.db_pass
 try:
@@ -42,15 +41,13 @@ except ConnectionError:
 # Create table
 try:
     cursor.execute('''
-            IF NOT EXISTS (SELECT * FROM sysobjects where name='HISTORICAL_DIVIDENDS')
-    		CREATE TABLE HISTORICAL_DIVIDENDS (
-    			date            DATE NULL,
-    			label           nvarchar(50) NULL,
-    			adjDividend     DECIMAL(16,10) NULL,
-    			dividend        DECIMAL(16,2) NULL,
-    			recordDate      DATE NULL,
-    			paymentDate     DATE NULL,
-    			declarationDate DATE NULL
+            IF NOT EXISTS (SELECT * FROM sysobjects where name='DELISTED_COMPANIES')
+    		CREATE TABLE DELISTED_COMPANIES (
+    			symbol            NVARCHAR(MAX) NULL,
+    			companyName       NVARCHAR(MAX) NULL,
+    			exchange          NVARCHAR(MAX) NULL,
+    			ipoDate           DATE NULL,
+    			delistedDate      DATE NULL,
     			)
                    ''')
     conn.commit()
@@ -60,7 +57,7 @@ except ValueError:
 
 # Truncate table
 try:
-    cursor.execute(''' TRUNCATE TABLE HISTORICAL_DIVIDENDS''')
+    cursor.execute(''' TRUNCATE TABLE DELISTED_COMPANIES''')
     print("Truncate table completed successfully")
 except ValueError:
     print("Can't truncate table")
@@ -69,16 +66,14 @@ except ValueError:
 try:
     for row in df.itertuples():
         cursor.execute('''
-                    INSERT INTO HISTORICAL_DIVIDENDS (date, label, adjDividend, dividend, recordDate, paymentDate, declarationDate)
-                    VALUES (NULLIF(?,''),?,?,?,NULLIF(?,''),NULLIF(?,''),NULLIF(?,''))
+                    INSERT INTO DELISTED_COMPANIES (symbol, companyName, exchange, ipoDate, delistedDate)
+                    VALUES (?,?,?,NULLIF(?,''),NULLIF(?,''))
                     ''',
-                    row.date,
-                    row.label,
-                    row.adjDividend,
-                    row.dividend,
-                    row.recordDate,
-                    row.paymentDate,
-                    row.declarationDate
+                    row.symbol,
+                    row.companyName,
+                    row.exchange,
+                    row.ipoDate,
+                    row.delistedDate,
                     )
     conn.commit()
     print("Load data to table successfully")

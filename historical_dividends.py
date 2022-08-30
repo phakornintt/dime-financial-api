@@ -20,10 +20,9 @@ df = pd.DataFrame()
 for i in data['historical']:
     df = df.append(i,ignore_index=True)
 print("Rows:", len(df))
-print(df.head())
 # Database connection
-server = "BAC00627"
-database = "TEST"
+server = cfg.db_server
+database = "financedb"
 username = cfg.db_user
 password = cfg.db_pass
 try:
@@ -45,7 +44,7 @@ try:
             IF NOT EXISTS (SELECT * FROM sysobjects where name='HISTORICAL_DIVIDENDS')
     		CREATE TABLE HISTORICAL_DIVIDENDS (
     			date            DATE NULL,
-    			label           nvarchar(50) NULL,
+    			label           NVARCHAR(MAX) NULL,
     			adjDividend     DECIMAL(16,10) NULL,
     			dividend        DECIMAL(16,2) NULL,
     			recordDate      DATE NULL,
