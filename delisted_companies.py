@@ -4,6 +4,7 @@ import requests
 import json
 import pyodbc
 from UTIL import _config as cfg
+from datetime import datetime
 
 # HTTP Request
 api_key = cfg.api_key
@@ -20,6 +21,10 @@ df = pd.DataFrame()
 for i in data:
     df = df.append(i,ignore_index=True)
 print("Rows:", len(df))
+
+# Add ETL Date
+df["ETL Date"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 # Database connection
 server = cfg.db_server
 database = "financedb"
@@ -48,6 +53,7 @@ try:
     			exchange          NVARCHAR(MAX) NULL,
     			ipoDate           DATE NULL,
     			delistedDate      DATE NULL,
+    			ETL_Date          DATETIME
     			)
                    ''')
     conn.commit()
@@ -66,14 +72,15 @@ except ValueError:
 try:
     for row in df.itertuples():
         cursor.execute('''
-                    INSERT INTO DELISTED_COMPANIES (symbol, companyName, exchange, ipoDate, delistedDate)
-                    VALUES (?,?,?,NULLIF(?,''),NULLIF(?,''))
+                    INSERT INTO DELISTED_COMPANIES (symbol, companyName, exchange, ipoDate, delistedDate, ETL_Date)
+                    VALUES (?, ?, ?, NULLIF(?,''), NULLIF(?,''), ?)
                     ''',
                     row.symbol,
                     row.companyName,
                     row.exchange,
                     row.ipoDate,
                     row.delistedDate,
+                    row.ETL_Date
                     )
     conn.commit()
     print("Load data to table successfully")

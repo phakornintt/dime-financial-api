@@ -4,6 +4,7 @@ import requests
 import json
 import pyodbc
 from UTIL import _config as cfg
+from datetime import datetime
 
 # HTTP Request
 api_key = cfg.api_key
@@ -20,6 +21,10 @@ df = pd.DataFrame()
 for i in data['historical']:
     df = df.append(i,ignore_index=True)
 print("Rows:", len(df))
+
+# Add ETL Date
+df["ETL_Date"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 # Database connection
 server = cfg.db_server
 database = "financedb"
@@ -49,7 +54,8 @@ try:
     			dividend        DECIMAL(16,2) NULL,
     			recordDate      DATE NULL,
     			paymentDate     DATE NULL,
-    			declarationDate DATE NULL
+    			declarationDate DATE NULL,
+    			ETL_Date        DATETIME
     			)
                    ''')
     conn.commit()
@@ -68,8 +74,8 @@ except ValueError:
 try:
     for row in df.itertuples():
         cursor.execute('''
-                    INSERT INTO HISTORICAL_DIVIDENDS (date, label, adjDividend, dividend, recordDate, paymentDate, declarationDate)
-                    VALUES (NULLIF(?,''),?,?,?,NULLIF(?,''),NULLIF(?,''),NULLIF(?,''))
+                    INSERT INTO HISTORICAL_DIVIDENDS (date, label, adjDividend, dividend, recordDate, paymentDate, declarationDate, ETL_Date)
+                    VALUES (NULLIF(?,''), ?, ?, ?, NULLIF(?,''), NULLIF(?,''), NULLIF(?,''), ?)
                     ''',
                     row.date,
                     row.label,
@@ -77,7 +83,8 @@ try:
                     row.dividend,
                     row.recordDate,
                     row.paymentDate,
-                    row.declarationDate
+                    row.declarationDate,
+                    row.ETL_Date
                     )
     conn.commit()
     print("Load data to table successfully")
