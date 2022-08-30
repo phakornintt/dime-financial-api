@@ -27,7 +27,7 @@ df["ETL_Date"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 # Database connection
 server = cfg.db_server
-database = "financedb"
+database = cfg.db_name
 username = cfg.db_user
 password = cfg.db_pass
 try:
