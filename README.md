@@ -4,6 +4,16 @@ This project is provide for qualification process at Dime.
 ## Purpose
 Ingest data from a free financial data API by using HTTP request. Afterward, load the data to local database.
 
+## Environments
+* Executor: Python 3.9
+* Database: MSSQL server 2019 (version 15.0.2000.5)
+
+  ### Python packages
+  * pyodbc 4.0.31
+  * pandas  1.3.4
+  * request 2.26.0
+  * json 2.0.9
+
 ## How to use
 1. Modify _config_template.py before use
 ``` Ruby
