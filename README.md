@@ -31,3 +31,6 @@ db_pass = 'xxx'
 "DRIVE:\YOUR PYTHON INTERPRETER PATH" "DRIVE:\PATH\delisted_companies.py"
 "DRIVE:\YOUR PYTHON INTERPRETER PATH" "DRIVE:\PATH\dime-financial-api\delisted_companies.py"
 ```
+
+## Result
+![image](https://user-images.githubusercontent.com/83294904/187585354-631e4343-3b92-46e8-bc9b-aa977d48213a.png)
