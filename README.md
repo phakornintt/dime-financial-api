@@ -3,8 +3,9 @@ This project is provide for qualification process at Dime.
 
 ## Purpose
 Ingest data from a free financial data API by using HTTP request. Afterward, load the data to local database.
-Historical Dividends (https://site.financialmodelingprep.com/developer/docs/#Historical-Dividends)
-Delisted companies ((https://site.financialmodelingprep.com/developer/docs/delisted-companies-api/))
+
+* Historical Dividends (https://site.financialmodelingprep.com/developer/docs/#Historical-Dividends)
+* Delisted companies ((https://site.financialmodelingprep.com/developer/docs/delisted-companies-api/))
 
 ## Environments
 * Executor: Python 3.9
